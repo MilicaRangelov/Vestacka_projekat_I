@@ -6,6 +6,7 @@ class Table:
     def __init__(self, rows, cols) -> None:
         self.rows = rows
         self.cols = cols
+        print(rows, " ", cols)
         self.matrix = [[None for _ in range(self.cols)]
                        for _ in range(self.rows)]
 
@@ -43,6 +44,7 @@ class Table:
         return
 
     def is_valid(self, player, move) -> bool:
+        # print(move)
         if (len(move) != 2):
             return False
         i = move[0]
@@ -71,8 +73,8 @@ class Table:
                     ][move[1] + (1 if player == 'O' else 0)] = player
 
     def can_play(self, player) -> bool:
-        for i in range(self.cols):
-            for j in range(self.rows):
+        for i in range(self.rows):
+            for j in range(self.cols):
                 if (self.is_valid(player, (i, j))):
                     return True
         return False
@@ -87,8 +89,8 @@ def main():
     while table.can_play(player):
         table.draw_table()
         print("\nTrenutno igra : ", player)
-        move = reduce(lambda a, b: (
-            *a, int(b)-1), str.split(input("Unesi potez: ")), tuple())  # unos tuple (x, y)
+        move = reduce(lambda a, b:
+                      (*a, int(b if ord(b) >= ord('0') and ord(b) <= ord('9') else ord(b) - ord('A'))), str.split(input("Unesi potez: ")), tuple())  # unos tuple (x, y)
         while not table.is_valid(player, move):
             move = reduce(lambda a, b: (*a, int(b)-1), str.split(
                 input("Nevalidan potez unesi validan potez: ")), tuple())  # unos tuple (x, y)
