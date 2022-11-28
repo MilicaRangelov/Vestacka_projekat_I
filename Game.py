@@ -35,7 +35,7 @@ class Game:
                 x = random.randrange(self.cols)
                 y = random.randrange(self.rows)
             self.table.play(p, (x, y))
-            p = 'X' if p == 'O' else 'O'
+            p = 'X' if p == 'O' else 'O3'
         self.table.draw_table()
 
     def next_move(self) -> bool:
@@ -56,10 +56,10 @@ class Game:
         return True
 
     def get_move_from_player(self):
-        move = reduce(lambda a, b: (*a, int(ord(b)-ord('1') if ord(b) >= ord('0') and ord(b) <= ord('9')
+        move = reduce(lambda a, b: (*a, int(ord(b)-ord('1') if ord(b) >= ord('1') and ord(b) <= ord('9')
                                             else ord(b) - ord('A'))), str.split(input("Unesi potez u obliku \"BROJ BROJ\": ")), tuple())
         while not self.table.is_valid(self.current_on_move, move):
-            move = reduce(lambda a, b: (*a, int(b if ord(b) >= ord('0') and ord(b) <= ord('9')
+            move = reduce(lambda a, b: (*a, int(ord(b)-ord('1') if ord(b) >= ord('1') and ord(b) <= ord('9')
                                                 else ord(b) - ord('A'))), str.split(input("Nevalidan potez, unesi ponovo: ")), tuple())
         return move
 

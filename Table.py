@@ -6,11 +6,29 @@ class Table:
     def __init__(self, rows, cols) -> None:
         self.rows = rows
         self.cols = cols
-        print(rows, " ", cols)
         self.matrix = [[None for _ in range(self.cols)]
                        for _ in range(self.rows)]
+        self.remaining_x = set()
+        self.remaining_o = set()
+        self.played_x = set()
+        self.played_o = set()
+
+        for i in range(rows-1):
+            for j in range(cols):
+                self.remaining_x.add((i, j))
+        for i in range(rows):
+            for j in range(cols-1):
+                self.remaining_o.add((i, j))
 
     def draw_table(self) -> None:
+        for move_x in self.played_x:
+            self.matrix[move_x[0]][move_x[1]] = 'X'
+        for move_y in self.played_o:
+            self.matrix[move_y[0]][move_y[1]] = 'O'
+
+        print(self.played_x, ' : ', self.remaining_x)
+        print(self.played_o, ' : ', self.remaining_o)
+
         print(' ', end=' ')
         for i in range(1, self.cols+1):
             print('  ' + (chr(64+i)), end=' ')  # column indices
@@ -43,34 +61,61 @@ class Table:
         print()
         return
 
+    # def is_valid(self, player, move) -> bool:
+    #     # print(move)
+    #     if (len(move) != 2):
+    #         return False
+    #     i = move[0]
+    #     j = move[1]
+    #     if i < 0 or i >= self.rows:
+    #         return False
+    #     if j < 0 or j >= self.cols:
+    #         return False
+    #     if (player == 'X'):
+    #         if i+1 >= self.rows:
+    #             return False
+    #         if self.matrix[i][j] != None or self.matrix[i+1][j] != None:
+    #             return False
+    #     if (player == 'O'):
+    #         if j+1 >= self.cols:
+    #             return False
+    #         if self.matrix[i][j] != None or self.matrix[i][j+1] != None:
+    #             return False
+    #     return True
+
     def is_valid(self, player, move) -> bool:
-        # print(move)
-        if (len(move) != 2):
-            return False
-        i = move[0]
-        j = move[1]
-        if i < 0 or i >= self.rows:
-            return False
-        if j < 0 or j >= self.cols:
-            return False
-        if (player == 'X'):
-            if i+1 >= self.rows:
-                return False
-            if self.matrix[i][j] != None or self.matrix[i+1][j] != None:
-                return False
-        if (player == 'O'):
-            if j+1 >= self.cols:
-                return False
-            if self.matrix[i][j] != None or self.matrix[i][j+1] != None:
-                return False
-        return True
+        if player == 'X' and (move in self.remaining_x):
+            return True
+        if player == 'O' and (move in self.remaining_o):
+            return True
+        return False
+
+    # def play(self, player, move) -> bool:
+    #     if (not self.is_valid(player, move)):
+    #         return False
+    #     self.matrix[move[0]][move[1]] = player
+    #     self.matrix[move[0] + (1 if player == 'X' else 0)
+    #                 ][move[1] + (1 if player == 'O' else 0)] = player
 
     def play(self, player, move) -> bool:
-        if (not self.is_valid(player, move)):
+        if not self.is_valid(player, move):
             return False
-        self.matrix[move[0]][move[1]] = player
-        self.matrix[move[0] + (1 if player == 'X' else 0)
-                    ][move[1] + (1 if player == 'O' else 0)] = player
+        if player == 'X':
+            self.played_x.add(move)
+            self.played_x.add((move[0] + 1, move[1]))
+            self.remaining_x.discard(move)
+            self.remaining_o.discard(move)
+            self.remaining_o.discard((move[0], move[1] - 1))
+            self.remaining_o.discard((move[0] + 1, move[1]))
+            self.remaining_o.discard((move[0] + 1, move[1] - 1))
+        else:
+            self.played_o.add(move)
+            self.played_o.add((move[0], move[1] + 1))
+            self.remaining_o.discard(move)
+            self.remaining_x.discard(move)
+            self.remaining_x.discard((move[0] - 1, move[1]))
+            self.remaining_x.discard((move[0] - 1, move[1] + 1))
+            self.remaining_x.discard((move[0], move[1] + 1))
 
     def can_play(self, player) -> bool:
         for i in range(self.rows):
@@ -78,28 +123,3 @@ class Table:
                 if (self.is_valid(player, (i, j))):
                     return True
         return False
-
-# TESTING
-
-
-def main():
-    table = Table(4, 4)
-    move = (0, 0)
-    player = 'X'
-    while table.can_play(player):
-        table.draw_table()
-        print("\nTrenutno igra : ", player)
-        move = reduce(lambda a, b:
-                      (*a, int(b if ord(b) >= ord('0') and ord(b) <= ord('9') else ord(b) - ord('A'))), str.split(input("Unesi potez: ")), tuple())  # unos tuple (x, y)
-        while not table.is_valid(player, move):
-            move = reduce(lambda a, b: (*a, int(b)-1), str.split(
-                input("Nevalidan potez unesi validan potez: ")), tuple())  # unos tuple (x, y)
-        table.play(player, move)
-        player = 'X' if player is 'O' else 'O'
-    table.draw_table()
-    player = 'X' if player is 'O' else 'O'
-    print("Pobednik : ", player)
-
-
-if __name__ == "__main__":
-    main()
