@@ -1,5 +1,5 @@
 from functools import reduce
-from cprint import cprint
+from termcolor import cprint
 
 
 class Table:
@@ -31,33 +31,38 @@ class Table:
 
         print(' ', end=' ')
         for i in range(1, self.cols+1):
-            print('  ' + (chr(64+i)), end=' ')  # column indices
+            cprint('  ' + (chr(64+i)),'grey',attrs=['bold'] ,end=' ')  # column indices
         print()
         print(' ', end=' ')
         for j in range(0, self.cols):  # horizontal walls
-            print('===', end='=')
+            cprint('====', attrs=['bold'], end='')
         print()
         for i in range(0, self.rows):
-            print(chr(ord('0') + i + 1) if i <
-                  10 else chr(ord('A')+i-10), end=' | ')  # row index
+            cprint(chr(ord('0') + i + 1) if i <
+                  10 else chr(ord('A')+i-10),'grey',attrs=['bold'] , end='')
+            cprint(' | ',attrs=['bold'], end = '')        # row index
             for j in range(0, self.cols):  # cells and vertical walls
 
                 if self.matrix[i][j] == None:
                     print(' ', end=' | ')
                 else:
-                    print(self.matrix[i][j], end=' | ')
+                    if self.matrix[i][j] == 'X':
+                        cprint(self.matrix[i][j], 'red', end='')
+                    else:
+                         cprint(self.matrix[i][j], 'blue', end='')   
+                    cprint(' | ', attrs=['bold'],end='')     
 
                 if (j == self.cols-1):
-                    print(chr(ord('0') + i + 1), end='')
+                    cprint(chr(ord('0') + i + 1),'grey',attrs=['bold'] , end='')
                     print()
             print(' ', end=' ')
             for j in range(0, self.cols):  # horizontal walls
-                print('===', end='=')
+                cprint('====',attrs=['bold'], end='')
             print()
 
         print(' ', end=' ')
         for i in range(1, self.cols+1):
-            print('  ' + (chr(64+i)), end=' ')  # column indices
+            cprint('  ' + (chr(64+i)),'grey',attrs=['bold'] , end=' ')  # column indices
         print()
         return
 
