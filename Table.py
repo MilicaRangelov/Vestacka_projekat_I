@@ -159,3 +159,28 @@ class Table:
         if move in self.played_x or move in self.played_o:
             return True
         return False
+    
+    def set_table_by_creating(self, px, po):
+        self.matrix = [[None for _ in range(self.cols)]
+                       for _ in range(self.rows)]
+        for x in px:
+            self.matrix[x[0]][x[1]] = 'X'
+            self.matrix[x[0]+1][x[1]] = 'X'
+        for y in po:
+            self.matrix[y[0]][y[1]] = 'O'
+            self.matrix[y[0]][y[1]+1] = 'O'
+
+        self.remaining_x = px
+        self.remaining_o = po
+        self.played_x = set()
+        self.played_o = set()
+
+        for i in len(self.matrix):
+            for j in len(self.matrix[0]):
+                if self.matrix[i][j] is None:
+                    if self.matrix[i][j+1] is None:
+                        self.remaining_o.add((i,j))
+                    if self.matrix[i+1][j] is None:
+                        self.remaining_x.add((i, j))
+
+        
