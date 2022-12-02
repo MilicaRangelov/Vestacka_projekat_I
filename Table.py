@@ -119,9 +119,9 @@ class Table:
                 self.remaining_x.discard((move[0]-1, move[1]))
 
             if not self.is_not_empty((move[0], move[1] + 1)) and self.is_not_empty((move[0], move[1] + 2)):
-                self.remaining_o.remove((move[0], move[1]+1))
+                self.remaining_o.discard((move[0], move[1]+1))
             if not self.is_not_empty((move[0]+1, move[1] + 1)) and self.is_not_empty((move[0]+1, move[1] + 2)):
-                self.remaining_o.remove((move[0]+1, move[1]+1))
+                self.remaining_o.discard((move[0]+1, move[1]+1))
 
             self.remaining_o.discard(move)
             self.remaining_o.discard((move[0], move[1] - 1))
@@ -136,9 +136,9 @@ class Table:
                 self.remaining_o.discard((move[0], move[1] - 1))
 
             if not self.is_not_empty((move[0] + 1, move[1])) and self.is_not_empty((move[0] + 2, move[1])):
-                self.remaining_x.remove((move[0] + 1, move[1]))
+                self.remaining_x.discard((move[0] + 1, move[1]))
             if not self.is_not_empty((move[0]+1, move[1] + 1)) and self.is_not_empty((move[0]+2, move[1] + 1)):
-                self.remaining_x.remove((move[0]+1, move[1]+1))
+                self.remaining_x.discard((move[0]+1, move[1]+1))
 
             self.remaining_x.discard(move)
             self.remaining_x.discard((move[0] - 1, move[1]))

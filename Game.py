@@ -37,6 +37,8 @@ class Game:
             self.table.play(p, (x, y))
             p = 'X' if p == 'O' else 'O3'
         self.table.draw_table()
+    
+    
 
     def next_move(self) -> bool:
         if (not self.table.can_play(self.current_on_move)):
