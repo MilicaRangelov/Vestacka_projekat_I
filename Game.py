@@ -11,12 +11,26 @@ class Game:
         self.current_on_move = 'X'
 
     def set_table_size(self):
-        self.rows = int(input("Unesite visina tabele(preporuceno 8): "))
-        while self.rows <= 0:
-            self.rows = int(input("Nije validna vrednost unesite ponovo: "))
-        self.cols = int(input("Unesite sirina tabele(preporuceno 8): "))
-        while self.cols <= 0:
-            self.cols = int(input("Nije validna vrednost unesite ponovo: "))
+        self.rows = -1
+        r = input("Unesite visina tabele(preporuceno 8): ")
+        while self.rows < 0:
+            i = -1
+            try:
+                i = int(r)
+                self.rows = i
+            except:
+                r = input("Nije validna vrednosti, pokusaj ponovo: ")
+
+        self.cols = -1
+        r = input("Unesite sirinu tabele(preporuceno 8): ")
+        while self.cols < 0:
+            i = -1
+            try:
+                i = int(r)
+                self.cols = i
+            except:
+                r = input("Nije validna vrednosti, pokusaj ponovo: ")
+
         self.table = Table(self.rows, self.cols)
 
     def set_player(self):
@@ -58,11 +72,28 @@ class Game:
         return True
 
     def get_move_from_player(self):
-        move = reduce(lambda a, b: (*a, int(ord(b)-ord('1') if ord(b) >= ord('1') and ord(b) <= ord('9')
-                                            else ord(b) - ord('A'))), str.split(input("Unesi potez u obliku \"BROJ BROJ\": ")), tuple())
-        while not self.table.is_valid(self.current_on_move, move):
-            move = reduce(lambda a, b: (*a, int(ord(b)-ord('1') if ord(b) >= ord('1') and ord(b) <= ord('9')
-                                                else ord(b) - ord('A'))), str.split(input("Nevalidan potez, unesi ponovo: ")), tuple())
+        # move = reduce(lambda a, b: (*a, int(ord(b)-ord('1') if ord(b) >= ord('1') and ord(b) <= ord('9')
+        #                                     else ord(b) - ord('A'))), str.split(input("Unesi potez u obliku \"BROJ BROJ\": ")), tuple())
+        # while not self.table.is_valid(self.current_on_move, move):
+        #     move = reduce(lambda a, b: (*a, int(ord(b)-ord('1') if ord(b) >= ord('1') and ord(b) <= ord('9')
+        #                                         else ord(b) - ord('A'))), str.split(input("Nevalidan potez, unesi ponovo: ")), tuple())
+        move = (-1, -1)
+        uspesno = False
+        while not uspesno:
+            r = (-1,-1)
+            try:
+                #r = reduce(lambda a, b: (*a, int(ord(b)-ord('1') if ord(b) >= ord('1') and ord(b) <= ord('9') else ord(b) - ord('A'))), str.split(input("Unesi potez u obliku \"BROJ BROJ\": ")), tuple())
+                unos = str.split(input("Unesi potez u obliku \"BROJ BROJ\": "))
+                r = (int(unos[0]), int(unos[1]))
+                move = r
+            except:
+                print("Nevalidan unos")
+                continue
+            if not self.table.is_valid(self.current_on_move, move):
+                print("Nevalidan potez")
+            else:
+                uspesno = True
+            
         return move
 
     def draw_table(self):
