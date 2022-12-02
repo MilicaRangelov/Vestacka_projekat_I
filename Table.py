@@ -41,8 +41,7 @@ class Table:
         nrows = list(range(0, self.rows))
         nrows.reverse()
         for i in nrows:
-            cprint(chr(ord('0') + i + 1) if i <
-                   10 else chr(ord('A')+i-10), 'grey', attrs=['bold'], end='')
+            cprint(''+ str(i + 1) if len(str(i+1)) > 1 else len(str(i+1))*' ' + str(i + 1), 'grey', attrs=['bold'], end='')
             cprint(' | ', attrs=['bold'], end='')        # row index
             for j in range(0, self.cols):  # cells and vertical walls
 
@@ -56,7 +55,7 @@ class Table:
                     cprint(' | ', attrs=['bold'], end='')
 
                 if (j == self.cols-1):
-                    cprint(chr(ord('0') + i + 1), 'grey',
+                    cprint(''+ str(i + 1) if len(str(i+1)) > 1 else len(str(i+1))*' ' + str(i + 1), 'grey',
                            attrs=['bold'], end='')
                     print()
             print(' ', end=' ')

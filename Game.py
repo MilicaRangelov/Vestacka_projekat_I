@@ -84,7 +84,10 @@ class Game:
             try:
                 #r = reduce(lambda a, b: (*a, int(ord(b)-ord('1') if ord(b) >= ord('1') and ord(b) <= ord('9') else ord(b) - ord('A'))), str.split(input("Unesi potez u obliku \"BROJ BROJ\": ")), tuple())
                 unos = str.split(input("Unesi potez u obliku \"BROJ BROJ\": "))
-                r = (int(unos[0]), int(unos[1]))
+                if unos[1].isdigit():
+                    r = (int(unos[0])-1, int(unos[1])-1)
+                else:
+                    r = (int(unos[0]) - 1, ord(unos[1]) - ord('A'))
                 move = r
             except:
                 print("Nevalidan unos")
