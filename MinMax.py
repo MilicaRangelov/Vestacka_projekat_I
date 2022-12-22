@@ -1,13 +1,12 @@
 import copy
-from Table import Table
 
 
-class MinMax :
+class MinMax:
 
     def __init__(self) -> None:
         pass
 
-    def nova_stanja(self, stanje : Table,player):
+    def nova_stanja(self, stanje,player):
         
         nova_stanja = set()
 

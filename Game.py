@@ -63,11 +63,17 @@ class Game:
 
         if self.current_on_move == self.player:
             move = self.get_move_from_player()
+            self.table.play(self.current_on_move, move)
+            print(move)
         else:
             print("POZIV AI")  # TODO : ovde cemo da pozovemo AI da odigra
-            move = self.get_move_from_player()
-        print(move)
-        self.table.play(self.current_on_move, move)
+            #move = self.get_move_from_player()
+            game = self.table.call_MinMax(self.current_on_move)
+            self.table.remaining_x = game[0].remaining_x
+            self.table.remaining_o = game[0].remaining_o
+            self.table.played_x = game[0].played_x
+            self.table.played_o = game[0].played_o
+            
         self.current_on_move = 'X' if self.current_on_move == 'O' else 'O'
         return True
 
