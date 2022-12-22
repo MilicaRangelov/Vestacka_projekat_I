@@ -1,5 +1,8 @@
+from copy import deepcopy
 from functools import reduce
 from termcolor import cprint
+
+from MinMax import MinMax
 
 
 class Table:
@@ -159,6 +162,10 @@ class Table:
             return True
         return False
     
+    def call_MinMax(self,player):
+        minmax = MinMax()
+        return minmax.minimax(self,len(self.remaining_x) if player == 'X' else len(self.remaining_o),player,(self, -100),(self,100))
+
     def set_table_by_creating(self, px, po):
         self.matrix = [[None for _ in range(self.cols)]
                        for _ in range(self.rows)]
