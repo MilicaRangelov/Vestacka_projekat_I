@@ -29,9 +29,6 @@ class Table:
         for move_y in self.played_o:
             self.matrix[move_y[0]][move_y[1]] = 'O'
 
-        #print(self.played_x, ' : ', self.remaining_x)
-        #print(self.played_o, ' : ', self.remaining_o)
-
         print(' ', end=' ')
         for i in range(1, self.cols+1):
             cprint('  ' + (chr(64+i)), 'grey',
@@ -44,7 +41,8 @@ class Table:
         nrows = list(range(0, self.rows))
         nrows.reverse()
         for i in nrows:
-            cprint(''+ str(i + 1) if len(str(i+1)) > 1 else len(str(i+1))*' ' + str(i + 1), 'grey', attrs=['bold'], end='')
+            cprint('' + str(i + 1) if len(str(i+1)) > 1 else len(str(i+1))
+                   * ' ' + str(i + 1), 'grey', attrs=['bold'], end='')
             cprint(' | ', attrs=['bold'], end='')        # row index
             for j in range(0, self.cols):  # cells and vertical walls
 
@@ -58,7 +56,7 @@ class Table:
                     cprint(' | ', attrs=['bold'], end='')
 
                 if (j == self.cols-1):
-                    cprint(''+ str(i + 1) if len(str(i+1)) > 1 else len(str(i+1))*' ' + str(i + 1), 'grey',
+                    cprint('' + str(i + 1) if len(str(i+1)) > 1 else len(str(i+1))*' ' + str(i + 1), 'grey',
                            attrs=['bold'], end='')
                     print()
             print(' ', end=' ')
@@ -73,41 +71,12 @@ class Table:
         print()
         return
 
-    # def is_valid(self, player, move) -> bool:
-    #     # print(move)
-    #     if (len(move) != 2):
-    #         return False
-    #     i = move[0]
-    #     j = move[1]
-    #     if i < 0 or i >= self.rows:
-    #         return False
-    #     if j < 0 or j >= self.cols:
-    #         return False
-    #     if (player == 'X'):
-    #         if i+1 >= self.rows:
-    #             return False
-    #         if self.matrix[i][j] != None or self.matrix[i+1][j] != None:
-    #             return False
-    #     if (player == 'O'):
-    #         if j+1 >= self.cols:
-    #             return False
-    #         if self.matrix[i][j] != None or self.matrix[i][j+1] != None:
-    #             return False
-    #     return True
-
     def is_valid(self, player, move) -> bool:
         if player == 'X' and (move in self.remaining_x):
             return True
         if player == 'O' and (move in self.remaining_o):
             return True
         return False
-
-    # def play(self, player, move) -> bool:
-    #     if (not self.is_valid(player, move)):
-    #         return False
-    #     self.matrix[move[0]][move[1]] = player
-    #     self.matrix[move[0] + (1 if player == 'X' else 0)
-    #                 ][move[1] + (1 if player == 'O' else 0)] = player
 
     def play(self, player, move) -> bool:
         if not self.is_valid(player, move):
@@ -161,10 +130,10 @@ class Table:
         if move in self.played_x or move in self.played_o:
             return True
         return False
-    
-    def call_MinMax(self,player):
+
+    def call_MinMax(self, player):
         minmax = MinMax()
-        return minmax.minimax(self,len(self.remaining_x) if player == 'X' else len(self.remaining_o),player,(self, -len(self.remaining_o)),(self,len(self.remaining_x)))
+        return minmax.minimax(self, len(self.remaining_x) if player == 'X' else len(self.remaining_o), player, (self, -len(self.remaining_o)), (self, len(self.remaining_x)))
 
     def set_table_by_creating(self, px, po):
         self.matrix = [[None for _ in range(self.cols)]
@@ -185,8 +154,6 @@ class Table:
             for j in len(self.matrix[0]):
                 if self.matrix[i][j] is None:
                     if self.matrix[i][j+1] is None:
-                        self.remaining_o.add((i,j))
+                        self.remaining_o.add((i, j))
                     if self.matrix[i+1][j] is None:
                         self.remaining_x.add((i, j))
-
-        
