@@ -9,21 +9,23 @@ class MinMax:
     def nova_stanja(self, stanje, player):
         nova_stanja = set()
         if player == 'X':
-            for move in stanje.remaining_x:
-                game = copy.deepcopy(stanje)
-                game.play(player, move)
-                nova_stanja.add(game)
+            for move in stanje[0].remaining_x:
+                game = copy.deepcopy(stanje[0])
+                valid = game.play(player, move)
+                if valid == True:
+                    nova_stanja.add((game,move))
         else:
-            for move in stanje.remaining_o:
-                game = copy.deepcopy(stanje)
-                game.play(player, move)
-                nova_stanja.add(game)
+            for move in stanje[0].remaining_o:
+                game = copy.deepcopy(stanje[0])
+                valid = game.play(player, move)
+                if valid == True:
+                    nova_stanja.add((game,move))
         return nova_stanja
 
     def proceni_stanje(self, stanje, player):
         if player == 'X':
-            return len(stanje.remaining_x)
-        return len(stanje.remaining_x) - len(stanje.remaining_o)
+            return -len(stanje[0].remaining_o)
+        return  -len(stanje[0].remaining_x)
 
     def max_stanje(self, lsv):
         return max(lsv, key=lambda x: x[1])
@@ -34,26 +36,25 @@ class MinMax:
     def max_value(self, stanje, dubina, alpha, beta):
         lista_novih_stanja = self.nova_stanja(stanje, 'X')
         if dubina == 0 or lista_novih_stanja is None or len(lista_novih_stanja) <= 1:
-            return (stanje, self.proceni_stanje(stanje, 'X'))
+            return (stanje[0], self.proceni_stanje(stanje, 'X'),stanje[1] if stanje[1] != None else list(lista_novih_stanja)[0][1])
         else:
             for s in lista_novih_stanja:
-                alpha = max(alpha, self.min_value(
-                    s, dubina - 1, alpha, beta), key=lambda x: x[1])
+                alpha = max(alpha, self.min_value(s, dubina - 1, alpha, beta), key=lambda x: x[1])
+                alpha = tuple([stanje[0],alpha[1],s[1]])
                 if alpha[1] >= beta[1]:
-                    return beta
+                    return tuple([alpha[0],beta[1],alpha[2]])
         return alpha
 
     def min_value(self, stanje, dubina, alpha, beta):
         lista_novih_stanja = self.nova_stanja(stanje, 'O')
         if dubina == 0 or lista_novih_stanja is None or len(lista_novih_stanja) <= 1:
-            return (stanje, self.proceni_stanje(stanje, 'O'))
+            return (stanje[0], self.proceni_stanje(stanje, 'O'),stanje[1] if stanje[1] != None else list(lista_novih_stanja)[0][1])
         else:
             for s in lista_novih_stanja:
-                beta = min(beta,
-                           self.max_value(s, dubina - 1, alpha, beta),
-                           key=lambda x: x[1])
+                beta = min(beta, self.max_value(s, dubina - 1, alpha, beta), key=lambda x: x[1])
+                beta = tuple([stanje[0],beta[1],s[1]])
                 if beta[1] <= alpha[1]:
-                    return alpha
+                    return tuple([beta[0],alpha[1],beta[2]])
         return beta
 
     def minimax(self, stanje, dubina, moj_potez, alpha, beta):

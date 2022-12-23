@@ -49,7 +49,7 @@ class Game:
                 x = random.randrange(self.cols)
                 y = random.randrange(self.rows)
             self.table.play(p, (x, y))
-            p = 'X' if p == 'O' else 'O3'
+            p = 'X' if p == 'O' else 'O'
         self.table.draw_table()
 
     def next_move(self) -> bool:
@@ -60,17 +60,16 @@ class Game:
         print("Trenutno igra : ", self.current_on_move)
 
         if self.current_on_move == self.player:
-            move = self.get_move_from_player()
-            self.table.play(self.current_on_move, move)
+            #move = self.get_move_from_player()
+            game = self.table.call_MinMax(self.current_on_move)
+            self.table.play(self.current_on_move, game[2])
             print(move)
         else:
             print("POZIV AI")  # TODO : ovde cemo da pozovemo AI da odigra
             #move = self.get_move_from_player()
             game = self.table.call_MinMax(self.current_on_move)
-            self.table.remaining_x = game[0].remaining_x
-            self.table.remaining_o = game[0].remaining_o
-            self.table.played_x = game[0].played_x
-            self.table.played_o = game[0].played_o
+            self.table.play(self.current_on_move,game[2])
+            print(game[2])
 
         self.current_on_move = 'X' if self.current_on_move == 'O' else 'O'
         return True

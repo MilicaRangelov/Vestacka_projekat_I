@@ -115,6 +115,7 @@ class Table:
             self.remaining_x.discard((move[0] - 1, move[1]))
             self.remaining_x.discard((move[0] - 1, move[1] + 1))
             self.remaining_x.discard((move[0], move[1] + 1))
+        return True    
 
     def can_play(self, player) -> bool:
         if player == 'X':
@@ -133,7 +134,7 @@ class Table:
 
     def call_MinMax(self, player):
         minmax = MinMax()
-        return minmax.minimax(self, len(self.remaining_x) if player == 'X' else len(self.remaining_o), player, (self, -len(self.remaining_o)), (self, len(self.remaining_x)))
+        return minmax.minimax((self,None), 6 , player, (self, -10, None), (self,10 ,None))
 
     def set_table_by_creating(self, px, po):
         self.matrix = [[None for _ in range(self.cols)]
