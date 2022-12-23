@@ -35,7 +35,7 @@ class MinMax:
 
     def max_value(self,stanje, dubina, alpha, beta):
         lista_novih_stanja = self.nova_stanja(stanje,'X')
-        if dubina == 0 or lista_novih_stanja is None:
+        if dubina == 0 or lista_novih_stanja is None or len(lista_novih_stanja) <= 1:
             return (stanje, self.proceni_stanje(stanje,'X'))
         else:
             for s in lista_novih_stanja:
@@ -48,15 +48,15 @@ class MinMax:
 
     def min_value(self,stanje, dubina, alpha, beta):
         lista_novih_stanja = self.nova_stanja(stanje, 'O')
-        if dubina == 0 or lista_novih_stanja is None:
+        if dubina == 0 or lista_novih_stanja is None or len(lista_novih_stanja) <= 1:
             return (stanje, self.proceni_stanje(stanje,'O'))
         else:
             for s in lista_novih_stanja:
                 beta = min(beta,
                 self.max_value(s, dubina - 1, alpha, beta),
                 key = lambda x: x[1])
-            if beta[1] <= alpha[1]:
-             return alpha
+                if beta[1] <= alpha[1]:
+                    return alpha
         return beta
     
     def minimax(self,stanje, dubina, moj_potez, alpha, beta):
