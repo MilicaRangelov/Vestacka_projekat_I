@@ -1,5 +1,5 @@
 from copy import deepcopy
-from functools import reduce
+from functools import cache, reduce
 from Table import Table
 import random
 
@@ -69,7 +69,7 @@ class Game:
             print("POZIV AI")  # TODO : ovde cemo da pozovemo AI da odigra
             # move = self.get_move_from_player()
             # game = self.table.call_MinMax(self.current_on_move)
-            move = self.get_next_move_alpha_beta()
+            move = self.get_next_move()
             self.table.play(self.current_on_move, move)
             print(move)
         print("Broj zagarantovanih poteza : ",
@@ -153,6 +153,7 @@ class Game:
 
         return move
 
+    @cache
     def minimax(self, player) -> int:
         bestScore = 0
         if not self.table.can_play(player):
@@ -179,6 +180,7 @@ class Game:
     def state_value(self) -> int:
         return ((len(self.table.remaining_x)+1) / (len(self.table.remaining_o) + 1))*(self.table.safe_state_count('X') - self.table.safe_state_count('O'))
 
+    @cache
     def alphabeta(self, player, depth, alpha, beta):
         if depth == 0:
             return self.state_value()
