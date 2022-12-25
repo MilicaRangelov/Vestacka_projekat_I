@@ -177,13 +177,13 @@ class Game:
         return bestScore
 
     def state_value(self) -> int:
-        return self.table.safe_state_count('X') - self.table.safe_state_count('O')
+        return ((len(self.table.remaining_x)+1) / (len(self.table.remaining_o) + 1))*(self.table.safe_state_count('X') - self.table.safe_state_count('O'))
 
     def alphabeta(self, player, depth, alpha, beta):
         if depth == 0:
             return self.state_value()
         if player == 'X':
-            for m in deepcopy(self.table.remaining_o):
+            for m in (self.table.remaining_o):
                 played = self.table.play('O', m)
                 score = self.alphabeta('O', depth-1, alpha, beta)
                 self.table.restore(played[1], played[2], played[3], played[4])
@@ -192,7 +192,7 @@ class Game:
                     return beta
             return alpha
         else:
-            for m in deepcopy(self.table.remaining_x):
+            for m in (self.table.remaining_x):
                 played = self.table.play('X', m)
                 score = self.alphabeta('X', depth-1, alpha, beta)
                 self.table.restore(played[1], played[2], played[3], played[4])
