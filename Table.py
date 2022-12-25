@@ -134,7 +134,7 @@ class Table:
 
     def call_MinMax(self, player):
         minmax = MinMax()
-        return minmax.minimax((self,None), 6 , player, (self, -10, None), (self,10 ,None))
+        return minmax.minimax((self,None), 10, player, (self, -10, None), (self,10 ,None))
 
     def set_table_by_creating(self, px, po):
         self.matrix = [[None for _ in range(self.cols)]
