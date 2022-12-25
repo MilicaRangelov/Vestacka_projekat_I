@@ -1,3 +1,4 @@
+from copy import deepcopy
 from functools import reduce
 from Table import Table
 import random
@@ -61,15 +62,16 @@ class Game:
 
         if self.current_on_move == self.player:
             move = self.get_move_from_player()
-            #game = self.table.call_MinMax(self.current_on_move)
+            # game = self.table.call_MinMax(self.current_on_move)
             self.table.play(self.current_on_move, move)
             print(move)
         else:
             print("POZIV AI")  # TODO : ovde cemo da pozovemo AI da odigra
-            #move = self.get_move_from_player()
-            game = self.table.call_MinMax(self.current_on_move)
-            self.table.play(self.current_on_move, game[2])
-            print(game[2])
+            # move = self.get_move_from_player()
+            # game = self.table.call_MinMax(self.current_on_move)
+            move = self.get_next_move_alpha_beta()
+            self.table.play(self.current_on_move, move)
+            print(move)
         print("Broj zagarantovanih poteza : ",
               self.table.safe_state_count(self.current_on_move))
         self.current_on_move = 'X' if self.current_on_move == 'O' else 'O'
@@ -104,6 +106,100 @@ class Game:
         if not self.table.can_play(self.current_on_move):
             return 'X' if self.current_on_move == 'O' else 'O'
         return "NO WINNER"
+
+    def get_next_move(self):
+        move = (-1, -1)
+        if self.current_on_move == 'X':
+            bestScore = -99
+            for m in deepcopy(self.table.remaining_x):
+                played = self.table.play('X', m)
+                score = self.minimax('X')
+                if bestScore < score:
+                    bestScore = score
+                    move = m
+                self.table.restore(played[1], played[2], played[3], played[4])
+        else:
+            bestScore = 99
+            for m in deepcopy(self.table.remaining_o):
+                played = self.table.play('O', m)
+                score = self.minimax('O')
+                if bestScore > score:
+                    bestScore = score
+                    move = m
+                self.table.restore(played[1], played[2], played[3], played[4])
+
+        return move
+
+    def get_next_move_alpha_beta(self):
+        move = (-1, -1)
+        if self.current_on_move == 'X':
+            bestScore = -99
+            for m in deepcopy(self.table.remaining_x):
+                played = self.table.play('X', m)
+                score = self.alphabeta('X', 10, -9999, 9999)
+                if bestScore < score:
+                    bestScore = score
+                    move = m
+                self.table.restore(played[1], played[2], played[3], played[4])
+        else:
+            bestScore = 99
+            for m in deepcopy(self.table.remaining_o):
+                played = self.table.play('O', m)
+                score = self.alphabeta('O', 4, -9999, 9999)
+                if bestScore > score:
+                    bestScore = score
+                    move = m
+                self.table.restore(played[1], played[2], played[3], played[4])
+
+        return move
+
+    def minimax(self, player) -> int:
+        bestScore = 0
+        if not self.table.can_play(player):
+            return -1 if player == 'X' else 1
+
+        if player == 'X':
+            bestScore = 99
+            for m in deepcopy(self.table.remaining_o):
+                played = self.table.play('O', m)
+                score = self.minimax('O')
+                if bestScore > score:
+                    bestScore = score
+                self.table.restore(played[1], played[2], played[3], played[4])
+        else:
+            bestScore = -99
+            for m in deepcopy(self.table.remaining_x):
+                played = self.table.play('X', m)
+                score = self.minimax('X')
+                if bestScore < score:
+                    bestScore = score
+                self.table.restore(played[1], played[2], played[3], played[4])
+        return bestScore
+
+    def state_value(self) -> int:
+        return self.table.safe_state_count('X') - self.table.safe_state_count('O')
+
+    def alphabeta(self, player, depth, alpha, beta):
+        if depth == 0:
+            return self.state_value()
+        if player == 'X':
+            for m in deepcopy(self.table.remaining_o):
+                played = self.table.play('O', m)
+                score = self.alphabeta('O', depth-1, alpha, beta)
+                self.table.restore(played[1], played[2], played[3], played[4])
+                alpha = max(alpha, score)
+                if alpha >= beta:
+                    return beta
+            return alpha
+        else:
+            for m in deepcopy(self.table.remaining_x):
+                played = self.table.play('X', m)
+                score = self.alphabeta('X', depth-1, alpha, beta)
+                self.table.restore(played[1], played[2], played[3], played[4])
+                beta = min(beta, score)
+                if beta <= alpha:
+                    return alpha
+            return beta
 
 
 def main():

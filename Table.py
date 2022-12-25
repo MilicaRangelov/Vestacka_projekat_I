@@ -22,6 +22,7 @@ class Table:
         for i in range(rows):
             for j in range(cols-1):
                 self.remaining_o.add((i, j))
+        return
 
     def draw_table(self) -> None:
         for move_x in self.played_x:
@@ -78,32 +79,91 @@ class Table:
             return True
         return False
 
-    def play(self, player, move) -> bool:
+    def play(self, player, move):
+        (playedx, playedo, discardx, discardo) = (set(), set(), set(), set())
+
         if not self.is_valid(player, move):
-            return False
+            return (False, playedx, playedo, discardx, discardo)
+
         if player == 'X':
             self.played_x.add(move)
             self.played_x.add((move[0] + 1, move[1]))
-            self.remaining_x.discard(move)
-            self.remaining_x.discard((move[0] + 1, move[1]))
-            self.remaining_x.discard((move[0] - 1, move[1]))
 
-            self.remaining_o.discard((move[0], move[1]))
-            self.remaining_o.discard((move[0]+1, move[1]))
-            self.remaining_o.discard((move[0], move[1]-1))
-            self.remaining_o.discard((move[0]+1, move[1]-1))
+            playedx.add(move)
+            playedx.add((move[0] + 1, move[1]))
+
+            self.remaining_x.remove(move)
+            discardx.add(move)
+            if (move[0] + 1, move[1]) in self.remaining_x:
+                self.remaining_x.remove((move[0] + 1, move[1]))
+                discardx.add((move[0] + 1, move[1]))
+
+            if (move[0]-1, move[1]) in self.remaining_x:
+                self.remaining_x.remove((move[0] - 1, move[1]))
+                discardx.add((move[0] - 1, move[1]))
+
+            if move in self.remaining_o:
+                self.remaining_o.remove(move)
+                discardo.add(move)
+
+            if (move[0]+1, move[1]) in self.remaining_o:
+                self.remaining_o.remove((move[0]+1, move[1]))
+                discardo.add((move[0]+1, move[1]))
+
+            if (move[0], move[1]-1) in self.remaining_o:
+                self.remaining_o.remove((move[0], move[1]-1))
+                discardo.add((move[0], move[1]-1))
+
+            if (move[0]+1, move[1]-1) in self.remaining_o:
+                self.remaining_o.remove((move[0]+1, move[1]-1))
+                discardo.add((move[0]+1, move[1]-1))
+
         else:
             self.played_o.add(move)
             self.played_o.add((move[0], move[1] + 1))
-            self.remaining_o.discard(move)
-            self.remaining_o.discard((move[0], move[1] + 1))
-            self.remaining_o.discard((move[0], move[1] - 1))
 
-            self.remaining_x.discard((move[0], move[1]))
-            self.remaining_x.discard((move[0], move[1]+1))
-            self.remaining_x.discard((move[0] - 1, move[1]))
-            self.remaining_x.discard((move[0] - 1, move[1] + 1))
-        return True
+            playedo.add(move)
+            playedo.add((move[0], move[1] + 1))
+
+            self.remaining_o.remove(move)
+            discardo.add(move)
+
+            if (move[0], move[1] + 1) in self.remaining_o:
+                self.remaining_o.remove((move[0], move[1] + 1))
+                discardo.add((move[0], move[1] + 1))
+
+            if (move[0], move[1]-1) in self.remaining_o:
+                discardo.add((move[0], move[1] - 1))
+                self.remaining_o.remove((move[0], move[1] - 1))
+
+            if move in self.remaining_x:
+                self.remaining_x.remove(move)
+                discardx.add(move)
+
+            if (move[0], move[1]+1) in self.remaining_x:
+                self.remaining_x.remove((move[0], move[1]+1))
+                discardx.add((move[0], move[1]+1))
+
+            if (move[0] - 1, move[1]) in self.remaining_x:
+                self.remaining_x.remove((move[0] - 1, move[1]))
+                discardx.add((move[0] - 1, move[1]))
+
+            if (move[0] - 1, move[1] + 1) in self.remaining_x:
+                self.remaining_x.remove((move[0] - 1, move[1] + 1))
+                discardx.add((move[0] - 1, move[1] + 1))
+
+        return (True, playedx, playedo, discardx, discardo)
+
+    def restore(self, playedx, playedo, discardx, discardo):
+        for p in playedx:
+            self.played_x.remove(p)
+        for p in playedo:
+            self.played_o.remove(p)
+        for p in discardx:
+            self.remaining_x.add(p)
+        for p in discardo:
+            self.remaining_o.add(p)
+        return
 
     def can_play(self, player) -> bool:
         if player == 'X':
