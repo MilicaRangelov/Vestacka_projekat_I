@@ -86,36 +86,24 @@ class Table:
             self.played_x.add((move[0] + 1, move[1]))
             self.remaining_x.discard(move)
             self.remaining_x.discard((move[0] + 1, move[1]))
-            if (move[0] == 1 or self.is_not_empty((move[0]-2, move[1]))):
-                self.remaining_x.discard((move[0]-1, move[1]))
+            self.remaining_x.discard((move[0] - 1, move[1]))
 
-            if not self.is_not_empty((move[0], move[1] + 1)) and self.is_not_empty((move[0], move[1] + 2)):
-                self.remaining_o.discard((move[0], move[1]+1))
-            if not self.is_not_empty((move[0]+1, move[1] + 1)) and self.is_not_empty((move[0]+1, move[1] + 2)):
-                self.remaining_o.discard((move[0]+1, move[1]+1))
-
-            self.remaining_o.discard(move)
-            self.remaining_o.discard((move[0], move[1] - 1))
-            self.remaining_o.discard((move[0] + 1, move[1]))
-            self.remaining_o.discard((move[0] + 1, move[1] - 1))
+            self.remaining_o.discard((move[0], move[1]))
+            self.remaining_o.discard((move[0]+1, move[1]))
+            self.remaining_o.discard((move[0], move[1]-1))
+            self.remaining_o.discard((move[0]+1, move[1]-1))
         else:
             self.played_o.add(move)
             self.played_o.add((move[0], move[1] + 1))
             self.remaining_o.discard(move)
             self.remaining_o.discard((move[0], move[1] + 1))
-            if (move[1] == 1 or self.is_not_empty((move[0], move[1] - 2))):
-                self.remaining_o.discard((move[0], move[1] - 1))
+            self.remaining_o.discard((move[0], move[1] - 1))
 
-            if not self.is_not_empty((move[0] + 1, move[1])) and self.is_not_empty((move[0] + 2, move[1])):
-                self.remaining_x.discard((move[0] + 1, move[1]))
-            if not self.is_not_empty((move[0]+1, move[1] + 1)) and self.is_not_empty((move[0]+2, move[1] + 1)):
-                self.remaining_x.discard((move[0]+1, move[1]+1))
-
-            self.remaining_x.discard(move)
+            self.remaining_x.discard((move[0], move[1]))
+            self.remaining_x.discard((move[0], move[1]+1))
             self.remaining_x.discard((move[0] - 1, move[1]))
             self.remaining_x.discard((move[0] - 1, move[1] + 1))
-            self.remaining_x.discard((move[0], move[1] + 1))
-        return True    
+        return True
 
     def can_play(self, player) -> bool:
         if player == 'X':
@@ -134,7 +122,7 @@ class Table:
 
     def call_MinMax(self, player):
         minmax = MinMax()
-        return minmax.minimax((self,None), 10, player, (self, -10, None), (self,10 ,None))
+        return minmax.minimax((self, None), 6, player, (self, -10, None), (self, 10, None))
 
     def set_table_by_creating(self, px, po):
         self.matrix = [[None for _ in range(self.cols)]
