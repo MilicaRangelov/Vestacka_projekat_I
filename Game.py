@@ -113,7 +113,7 @@ class Game:
             bestScore = -99
             for m in deepcopy(self.table.remaining_x):
                 played = self.table.play('X', m)
-                score = self.minimax('X')
+                score = self.minimax('X', self.table)
                 if bestScore < score:
                     bestScore = score
                     move = m
@@ -122,7 +122,7 @@ class Game:
             bestScore = 99
             for m in deepcopy(self.table.remaining_o):
                 played = self.table.play('O', m)
-                score = self.minimax('O')
+                score = self.minimax('O', self.table)
                 if bestScore > score:
                     bestScore = score
                     move = m
@@ -154,50 +154,50 @@ class Game:
         return move
 
     @cache
-    def minimax(self, player) -> int:
+    def minimax(self, player, table) -> int:
         bestScore = 0
-        if not self.table.can_play(player):
+        if not table.can_play(player):
             return -1 if player == 'X' else 1
 
         if player == 'X':
             bestScore = 99
-            for m in deepcopy(self.table.remaining_o):
-                played = self.table.play('O', m)
-                score = self.minimax('O')
+            for m in deepcopy(table.remaining_o):
+                played = table.play('O', m)
+                score = self.minimax('O', table)
                 if bestScore > score:
                     bestScore = score
-                self.table.restore(played[1], played[2], played[3], played[4])
+                table.restore(played[1], played[2], played[3], played[4])
         else:
             bestScore = -99
-            for m in deepcopy(self.table.remaining_x):
-                played = self.table.play('X', m)
-                score = self.minimax('X')
+            for m in deepcopy(table.remaining_x):
+                played = table.play('X', m)
+                score = self.minimax('X', table)
                 if bestScore < score:
                     bestScore = score
-                self.table.restore(played[1], played[2], played[3], played[4])
+                table.restore(played[1], played[2], played[3], played[4])
         return bestScore
 
-    def state_value(self) -> int:
-        return ((len(self.table.remaining_x)+1) / (len(self.table.remaining_o) + 1))*(self.table.safe_state_count('X') - self.table.safe_state_count('O'))
+    def state_value(self, table) -> int:
+        return ((len(table.remaining_x)+1) / (len(table.remaining_o) + 1))*(table.safe_state_count('X') - table.safe_state_count('O'))
 
     @cache
-    def alphabeta(self, player, depth, alpha, beta):
+    def alphabeta(self, player, depth, alpha, beta, table):
         if depth == 0:
-            return self.state_value()
+            return self.state_value(table)
         if player == 'X':
             for m in (self.table.remaining_o):
-                played = self.table.play('O', m)
-                score = self.alphabeta('O', depth-1, alpha, beta)
-                self.table.restore(played[1], played[2], played[3], played[4])
+                played = table.play('O', m)
+                score = self.alphabeta('O', depth-1, alpha, beta, table)
+                table.restore(played[1], played[2], played[3], played[4])
                 alpha = max(alpha, score)
                 if alpha >= beta:
                     return beta
             return alpha
         else:
             for m in (self.table.remaining_x):
-                played = self.table.play('X', m)
-                score = self.alphabeta('X', depth-1, alpha, beta)
-                self.table.restore(played[1], played[2], played[3], played[4])
+                played = table.play('X', m)
+                score = self.alphabeta('X', depth-1, alpha, beta, table)
+                table.restore(played[1], played[2], played[3], played[4])
                 beta = min(beta, score)
                 if beta <= alpha:
                     return alpha
