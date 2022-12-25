@@ -70,7 +70,8 @@ class Game:
             game = self.table.call_MinMax(self.current_on_move)
             self.table.play(self.current_on_move, game[2])
             print(game[2])
-
+        print("Broj zagarantovanih poteza : ",
+              self.table.safe_state_count(self.current_on_move))
         self.current_on_move = 'X' if self.current_on_move == 'O' else 'O'
         return True
 

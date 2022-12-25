@@ -124,6 +124,18 @@ class Table:
         minmax = MinMax()
         return minmax.minimax((self, None), 6, player, (self, -10, None), (self, 10, None))
 
+    def safe_state_count(self, player) -> int:
+        num = 0
+        if player == 'X':
+            for s in self.remaining_x:
+                if (s[0], s[1]) not in self.remaining_o and (s[0]+1, s[1]) not in self.remaining_o and (s[0], s[1]-1) not in self.remaining_o and (s[0]+1, s[1]-1) not in self.remaining_o:
+                    num += 1
+        else:
+            for s in self.remaining_o:
+                if (s[0], s[1]) not in self.remaining_x and (s[0], s[1]+1) not in self.remaining_x and (s[0]-1, s[1]) not in self.remaining_x and (s[0]-1, s[1]+1) not in self.remaining_x:
+                    num += 1
+        return num
+
     def set_table_by_creating(self, px, po):
         self.matrix = [[None for _ in range(self.cols)]
                        for _ in range(self.rows)]
