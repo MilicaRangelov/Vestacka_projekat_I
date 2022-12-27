@@ -218,3 +218,6 @@ class Table:
                         self.remaining_o.add((i, j))
                     if self.matrix[i+1][j] is None:
                         self.remaining_x.add((i, j))
+
+    def get_hash(self):
+        return reduce(lambda a, b: a * ((b[0] + b[1])), self.played_x, 1) * reduce(lambda a, b: a * (b[0] + b[1]), self.played_o, 2)
