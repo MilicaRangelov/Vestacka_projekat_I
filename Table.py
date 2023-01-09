@@ -191,7 +191,7 @@ class Table:
                 if (s[0], s[1]) not in self.remaining_o and (s[0]+1, s[1]) not in self.remaining_o and (s[0], s[1]-1) not in self.remaining_o and (s[0]+1, s[1]-1) not in self.remaining_o:
                     num += 1
                     if (s[0] == 0 and (s[1] == 0 or s[1] == self.cols-1)) or (s[0] == self.rows-2 and (s[1] == 0 or s[1] == self.cols-1)):
-                        num +=1
+                        num += 1
         else:
             for s in self.remaining_o:
                 if (s[0], s[1]) not in self.remaining_x and (s[0], s[1]+1) not in self.remaining_x and (s[0]-1, s[1]) not in self.remaining_x and (s[0]-1, s[1]+1) not in self.remaining_x:
@@ -224,4 +224,4 @@ class Table:
                         self.remaining_x.add((i, j))
 
     def get_hash(self):
-        return reduce(lambda a, b: a * (b[0]+1) * (b[1]+1), self.played_x, 1) * reduce(lambda a, b: a * (b[0]+1) * (b[1]+1), self.played_o, 2)
+        return (reduce(lambda a, b: a * (b[0]+1) * (b[1]+1), self.played_x, 1), reduce(lambda a, b: a * (b[0]+1) * (b[1]+1), self.played_o, 2))

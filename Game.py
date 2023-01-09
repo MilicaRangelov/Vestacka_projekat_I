@@ -14,6 +14,7 @@ class Game:
         self.stanja = 0
         self.stanjahash = dict()
         self.abhash = dict()
+        self.playedMoves = 0
 
     def set_table_size(self):
         self.rows = -1
@@ -75,11 +76,12 @@ class Game:
             print("POZIV AI")  # TODO : ovde cemo da pozovemo AI da odigra
             # move = self.get_move_from_player()
             # game = self.table.call_MinMax(self.current_on_move)
-            move = self.get_next_move_alpha_beta(self.current_on_move, 4)
+            move = self.get_next_move_alpha_beta(
+                self.current_on_move, 1 + self.playedMoves)
+            self.playedMoves += 1
             self.table.play(self.current_on_move, move)
             print(move)
-        
-        
+
         print("Broj krajnjih stanja : ", self.stanja)
 
         print("Broj zagarantovanih poteza : ",
@@ -122,11 +124,12 @@ class Game:
         move = (-1, -1)
 
         bestMove = 0
-        if(player == 'X'):
+        if (player == 'X'):
             bestMove = -9999
             for x in self.table.remaining_x:
                 pov = self.table.play('X', x)
-                score = self.alphabeta('O', depth-1, -9999, 9999, self.table.get_hash())
+                score = self.alphabeta(
+                    'O', depth-1, -9999, 9999, self.table.get_hash())
                 self.table.restore(pov[1], pov[2], pov[3], pov[4])
                 value = max(bestMove, score)
                 if value > bestMove:
@@ -135,8 +138,9 @@ class Game:
         else:
             bestMove = 9999
             for x in self.table.remaining_o:
-                pov = self.table.play('O',x)
-                score = self.alphabeta('X', depth-1, -9999, 9999, self.table.get_hash())
+                pov = self.table.play('O', x)
+                score = self.alphabeta(
+                    'X', depth-1, -9999, 9999, self.table.get_hash())
                 self.table.restore(pov[1], pov[2], pov[3], pov[4])
                 value = min(bestMove, score)
                 if value < bestMove:
@@ -151,24 +155,26 @@ class Game:
         #     return self.stanjahash[tablehash]
 
         self.stanja += 1
-        score = self.table.safe_state_count('X') - self.table.safe_state_count('O')
+        score = self.table.safe_state_count(
+            'X') - self.table.safe_state_count('O')
 
         # self.stanjahash[tablehash] = score
         return score
 
     # @cache
     def alphabeta(self, player, depth, alpha, beta, tablehash):
-        if tablehash in self.abhash.keys() :
+        if tablehash in self.abhash.keys():
             return self.abhash[tablehash]
-        
+
         if depth == 0 or not self.table.can_play(player):
             return self.state_value(player, tablehash)
-        
-        if(player == 'X'):
+
+        if (player == 'X'):
             bestMove = -9999
             for x in self.table.remaining_x:
                 pov = self.table.play('X', x)
-                bestMove = self.alphabeta('O', depth-1, alpha, beta, self.table.get_hash())
+                bestMove = self.alphabeta(
+                    'O', depth-1, alpha, beta, self.table.get_hash())
                 self.table.restore(pov[1], pov[2], pov[3], pov[4])
                 alpha = max(bestMove, alpha)
                 if beta <= alpha:
@@ -179,7 +185,8 @@ class Game:
             bestMove = 9999
             for x in self.table.remaining_o:
                 pov = self.table.play('O', x)
-                bestMove = self.alphabeta('X', depth-1, alpha, beta, self.table.get_hash())
+                bestMove = self.alphabeta(
+                    'X', depth-1, alpha, beta, self.table.get_hash())
                 self.table.restore(pov[1], pov[2], pov[3], pov[4])
                 beta = min(bestMove, beta)
                 if beta <= alpha:
