@@ -2,8 +2,6 @@ from copy import deepcopy
 from functools import reduce
 from termcolor import cprint
 
-from MinMax import MinMax
-
 
 class Table:
     def __init__(self, rows, cols) -> None:
@@ -179,10 +177,6 @@ class Table:
         if move in self.played_x or move in self.played_o:
             return True
         return False
-
-    def call_MinMax(self, player):
-        minmax = MinMax()
-        return minmax.minimax((self, None), 6, player, (self, -10, None), (self, 10, None))
 
     def safe_state_count(self, player) -> int:
         num = 0

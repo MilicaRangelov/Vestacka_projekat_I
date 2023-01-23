@@ -73,11 +73,10 @@ class Game:
             self.table.play(self.current_on_move, move)
             print(move)
         else:
-            print("POZIV AI")  # TODO : ovde cemo da pozovemo AI da odigra
+            print("POZIV AI")
             # move = self.get_move_from_player()
             # game = self.table.call_MinMax(self.current_on_move)
-            move = self.get_next_move_alpha_beta(
-                self.current_on_move, 1 + self.playedMoves)
+            move = self.get_next_move_alpha_beta(self.current_on_move, 1 + self.playedMoves)
             self.playedMoves += 1
             self.table.play(self.current_on_move, move)
             print(move)
