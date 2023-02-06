@@ -67,18 +67,17 @@ class Game:
 
         self.stanja = 0
         if self.current_on_move == self.player:
-            # move = self.get_move_from_player()
+            move = self.get_move_from_player()
             # game = self.table.call_MinMax(self.current_on_move)
            # move = self.get_next_move_alpha_beta()
-            move = self.get_next_move_alpha_beta(self.current_on_move, 1 + self.playedMoves)
             self.table.play(self.current_on_move, move)
             print(move)
         else:
             print("POZIV AI")
-            # move = self.get_move_from_player()
+            #move = self.get_move_from_player()
             # game = self.table.call_MinMax(self.current_on_move)
-            move = self.get_next_move_alpha_beta(self.current_on_move, 1 + self.playedMoves)
-            # move = self.get_move_from_player()
+            move = self.get_next_move_alpha_beta(
+                self.current_on_move, 1 + self.playedMoves)
             self.playedMoves += 1
             self.table.play(self.current_on_move, move)
             print(move)
